@@ -1,0 +1,7 @@
+body[data-theme='light'] {
+  --main-bg-color: #ffffff;
+}
+
+body[data-theme='dark'] {
+  --main-bg-color: rgb(0 30 29 / 93%);
+}

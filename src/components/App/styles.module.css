@@ -1,0 +1,25 @@
+.container {
+  margin: 20px auto 0 auto;
+  max-width: 800px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.titleLight {
+  margin: 0 auto;
+  letter-spacing: 10px;
+  text-shadow: 2px 2px 2px #7f7f7f;
+}
+
+.titleDark {
+  margin: 0 auto;
+  letter-spacing: 10px;
+  color: #f6f6f6;
+  text-shadow: 2px 2px 2px #7f7f7f;
+}
+
+.switchTheme {
+  align-self: flex-end;
+  margin-right: 20%;
+}
