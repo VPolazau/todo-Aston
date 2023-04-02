@@ -5,3 +5,14 @@
   align-items: center;
 }
 
+.line_through {
+  text-decoration: line-through;
+  color: brown;
+}
+
+@media (max-width: 500px) {
+  .card_btn {
+    flex-direction: column;
+    justify-content: center;
+  }
+}

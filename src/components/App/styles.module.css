@@ -1,19 +1,23 @@
 .container {
-  margin: 20px auto 0 auto;
-  max-width: 800px;
+  margin: 20px auto;
+  max-width: 80%;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
 .titleLight {
-  margin: 0 auto;
+  font-size: 30px;
+  font-weight: bold;
+  margin: 0 auto 30px auto;
   letter-spacing: 10px;
   text-shadow: 2px 2px 2px #7f7f7f;
 }
 
 .titleDark {
-  margin: 0 auto;
+  font-size: 30px;
+  font-weight: bold;
+  margin: 0 auto 30px auto;
   letter-spacing: 10px;
   color: #f6f6f6;
   text-shadow: 2px 2px 2px #7f7f7f;
