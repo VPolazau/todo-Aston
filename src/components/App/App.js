@@ -40,11 +40,11 @@ export class App extends Component {
   componentDidMount() {
     const prevState = JSON.parse(localStorage.getItem('state'));
     this.setState(prevState);
-    if (!prevState.isLightTheme) {
+    if (!prevState?.isLightTheme) {
       this.changeTheme();
     }
 
-    if (prevState.activeCount === 0 && prevState.doneCount === 0 && prevState.archiveCount === 0) {
+    if (prevState?.activeCount === 0 && prevState?.doneCount === 0 && prevState?.archiveCount === 0) {
       this.setState({ lastID: 0 });
     }
 
