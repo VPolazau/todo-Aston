@@ -17,7 +17,7 @@ import styles from './styles.module.css';
 
 export class App extends Component {
   state = {
-    isLightTheme: true,
+    isLightTheme: false,
     filter: 'ALL',
     isItemChangeMode: false,
     items: [],
@@ -40,8 +40,8 @@ export class App extends Component {
   componentDidMount() {
     const prevState = JSON.parse(localStorage.getItem('state'));
     this.setState(prevState);
-    if (!prevState?.isLightTheme) {
-      this.changeTheme();
+    if(!prevState?.isLightTheme){
+      this.setState({isLightTheme: 'light'})
     }
 
     if (prevState?.activeCount === 0 && prevState?.doneCount === 0 && prevState?.archiveCount === 0) {

@@ -13,9 +13,10 @@ export class Filter extends Component {
   };
 
   handleButtonFilter = (e) => {
-    if (this.state.alignment === e.target.innerText) return;
-    todoEvents.emit('filterChange', e.target.innerText);
-    this.setState({ alignment: e.target.innerText });
+    console.dir(e.target)
+    if (this.state.alignment === e.target.value) return;
+    todoEvents.emit('filterChange', e.target.value);
+    this.setState({ alignment: e.target.value });
   };
 
   changeSearchFilter = (e) => {
