@@ -6,8 +6,6 @@ import Badge from '@mui/material/Badge';
 
 import { todoEvents } from '../../events/events';
 
-import styles from './styles.module.css';
-
 export class Filter extends Component {
   state = {
     alignment: 'ALL',
@@ -22,7 +20,7 @@ export class Filter extends Component {
   render() {
     const {activeCount, doneCount, archiveCount} = this.props
     return (
-      <div className={styles.filter}>
+      <div>
         <Badge id='allCount'color="primary" badgeContent={activeCount + doneCount} sx={{left: 43, top: -18}}/>
         <Badge id='activeCount'color="success" badgeContent={activeCount} sx={{left: 119, top: -18}}/>
         <Badge id='doneCount'color="error" badgeContent={doneCount} sx={{left: 184, top: -18}}/>
