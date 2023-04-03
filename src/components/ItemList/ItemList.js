@@ -11,7 +11,9 @@ export class ItemList extends Component {
   }
 
   componentDidMount(){
-    todoEvents.addListener('searchChange', (searchStr) => this.setState({searchStr}))
+    todoEvents.addListener('searchChange', (searchStr) => {
+      setTimeout(() => this.setState({searchStr}), 500)
+    })
   }
 
   render() {
