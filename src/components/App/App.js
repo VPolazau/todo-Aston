@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import deepEqual from 'deep-equal';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import IconButton from '@mui/material/IconButton';
 import LightModeIcon from '@mui/icons-material/LightMode';
@@ -13,23 +14,17 @@ import { todoEvents } from '../../events/events';
 
 import styles from './styles.module.css';
 
-const items = [
-  { id: 1, title: 'Дом', body: 'Сделать уборку', type: 'ACTIVE', isArchived: false },
-  { id: 2, title: 'Машина', body: 'Заправиться', type: 'DONE', isArchived: false },
-  { id: 3, title: 'Робота', body: 'Заполнить отчёт', type: 'ACTIVE', isArchived: false },
-  { id: 4, title: 'Друзья', body: 'Поздравить с ДР', type: '', isArchived: true },
-];
 export class App extends Component {
   state = {
     isLightTheme: true,
     filter: 'ALL',
     isItemChangeMode: false,
-    items: items,
-    activeCount: 2,
-    doneCount: 1,
-    archiveCount: 1,
+    items: [],
+    activeCount: 0,
+    doneCount: 0,
+    archiveCount: 0,
     changedItem: undefined,
-    lastID: 4,
+    lastID: 0,
   };
 
   setTheme = () => {
@@ -42,32 +37,27 @@ export class App extends Component {
   };
 
   componentDidMount() {
+    const prevState = JSON.parse(localStorage.getItem('state'))
+    this.setState(prevState)
+    if(!prevState.isLightTheme){
+      this.changeTheme()
+    }
+    
     todoEvents.addListener('filterChange', (filter) => this.setState({ filter }));
 
     todoEvents.addListener('closeNewItem', () => this.setState({ isItemChangeMode: false, changedItem: undefined }));
 
     todoEvents.addListener('saveNewItem', (item) => {
-      this.setState(({ activeCount, doneCount, changedItem, items }) => {
+      this.setState(({ changedItem, items }) => {
         if (!changedItem) {
           return {
             isItemChangeMode: false,
-            activeCount: activeCount + 1,
             lastID: item.id,
             items: [...items, item],
             filter: 'ALL',
           };
         }
         const idx = items.findIndex((i) => i.id === item.id);
-        if (changedItem.type === 'DONE') {
-          return {
-            isItemChangeMode: false,
-            changedItem: undefined,
-            activeCount: activeCount + 1,
-            doneCount: doneCount - 1,
-            items: [...items.slice(0, idx), item, ...items.slice(idx + 1)],
-            filter: 'ALL',
-          };
-        }
         return {
           isItemChangeMode: false,
           changedItem: undefined,
@@ -78,23 +68,10 @@ export class App extends Component {
     });
 
     todoEvents.addListener('changeTypeTask', (id) =>
-      this.setState(({ items, activeCount, doneCount }) => {
+      this.setState(({ items }) => {
         const idx = items.findIndex((item) => item.id === id);
         const newItem = { ...items[idx], type: items[idx].type === 'DONE' ? 'ACTIVE' : 'DONE' };
-        if (items[idx].type === 'DONE') {
-          return {
-            activeCount: activeCount + 1,
-            doneCount: doneCount - 1,
-            items: [...items.slice(0, idx), newItem, ...items.slice(idx + 1)],
-          };
-        }
-        if (items[idx].type === 'ACTIVE') {
-          return {
-            activeCount: activeCount - 1,
-            doneCount: doneCount + 1,
-            items: [...items.slice(0, idx), newItem, ...items.slice(idx + 1)],
-          };
-        }
+        return { items: [...items.slice(0, idx), newItem, ...items.slice(idx + 1)] };
       })
     );
 
@@ -106,20 +83,14 @@ export class App extends Component {
     });
 
     todoEvents.addListener('deleteItem', (id) => {
-      this.setState(({ items, doneCount, activeCount, archiveCount }) => {
+      this.setState(({ items }) => {
         const idx = items.findIndex((item) => item.id === id);
-        if (items[idx].type === 'DONE') {
-          return { items: [...items.slice(0, idx), ...items.slice(idx + 1)], doneCount: doneCount - 1 };
-        }
-        if (items[idx].type === 'ACTIVE') {
-          return { items: [...items.slice(0, idx), ...items.slice(idx + 1)], activeCount: activeCount - 1 };
-        }
-        return { items: [...items.slice(0, idx), ...items.slice(idx + 1)], archiveCount: archiveCount - 1 };
+        return { items: [...items.slice(0, idx), ...items.slice(idx + 1)] };
       });
     });
 
     todoEvents.addListener('archiveItem', (id) => {
-      this.setState(({ items, activeCount, doneCount, archiveCount }) => {
+      this.setState(({ items }) => {
         const idx = items.findIndex((item) => item.id === id);
         const newItem = {
           ...items[idx],
@@ -127,29 +98,23 @@ export class App extends Component {
           type: items[idx].isArchived ? 'ACTIVE' : '',
         };
 
-        if (items[idx].type === 'ACTIVE') {
-          return {
-            items: [...items.slice(0, idx), newItem, ...items.slice(idx + 1)],
-            activeCount: activeCount - 1,
-            archiveCount: archiveCount + 1,
-          };
-        }
-
-        if (items[idx].type === 'DONE') {
-          return {
-            items: [...items.slice(0, idx), newItem, ...items.slice(idx + 1)],
-            doneCount: doneCount - 1,
-            archiveCount: archiveCount + 1,
-          };
-        }
-
-        return {
-          items: [...items.slice(0, idx), newItem, ...items.slice(idx + 1)],
-          archiveCount: archiveCount - 1,
-          activeCount: activeCount + 1,
-        };
+        return { items: [...items.slice(0, idx), newItem, ...items.slice(idx + 1)] };
       });
     });
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (!deepEqual(prevState, this.state)) {
+      localStorage.setItem('state', JSON.stringify(this.state));
+      const newState = JSON.parse(localStorage.getItem('state'));
+
+      const activeCount = newState.items.reduce((acc, i) => (i.type === 'ACTIVE' ? acc + 1 : acc), 0);
+      const doneCount = newState.items.reduce((acc, i) => (i.type === 'DONE' ? acc + 1 : acc), 0);
+      const archiveCount = newState.items.reduce((acc, i) => (i.isArchived ? acc + 1 : acc), 0);
+
+      this.setState(newState);
+      this.setState({ activeCount, doneCount, archiveCount });
+    }
   }
 
   changeTheme = () => {
