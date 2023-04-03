@@ -37,12 +37,12 @@ export class App extends Component {
   };
 
   componentDidMount() {
-    const prevState = JSON.parse(localStorage.getItem('state'))
-    this.setState(prevState)
-    if(!prevState.isLightTheme){
-      this.changeTheme()
+    const prevState = JSON.parse(localStorage.getItem('state'));
+    this.setState(prevState);
+    if (!prevState.isLightTheme) {
+      this.changeTheme();
     }
-    
+
     todoEvents.addListener('filterChange', (filter) => this.setState({ filter }));
 
     todoEvents.addListener('closeNewItem', () => this.setState({ isItemChangeMode: false, changedItem: undefined }));
@@ -70,7 +70,10 @@ export class App extends Component {
     todoEvents.addListener('changeTypeTask', (id) =>
       this.setState(({ items }) => {
         const idx = items.findIndex((item) => item.id === id);
-        const newItem = { ...items[idx], type: items[idx].type === 'DONE' ? 'ACTIVE' : 'DONE' };
+        const newItem = {
+          ...items[idx],
+          type: items[idx].isArchived ? '' : items[idx].type === 'DONE' ? 'ACTIVE' : 'DONE'
+        };
         return { items: [...items.slice(0, idx), newItem, ...items.slice(idx + 1)] };
       })
     );

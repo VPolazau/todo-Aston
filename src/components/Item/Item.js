@@ -10,15 +10,11 @@ import UnarchiveIcon from '@mui/icons-material/Unarchive';
 import Tooltip from '@mui/material/Tooltip';
 import { CardActionArea } from '@mui/material';
 import Snackbar from '@mui/material/Snackbar';
-import MuiAlert from '@mui/material/Alert';
 
 import { todoEvents } from '../../events/events';
 
 import styles from './styles.module.css';
-
-const Alert = React.forwardRef(function Alert(props, ref) {
-  return <MuiAlert elevation={6} ref={ref} variant='filled' {...props} />;
-});
+import { Alert } from '../Alert';
 export class Item extends Component {
   state = {
     isDone: false,

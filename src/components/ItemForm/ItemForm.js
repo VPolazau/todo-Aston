@@ -5,13 +5,9 @@ import SaveIcon from '@mui/icons-material/Save';
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 import Box from '@mui/material/Box';
 import Snackbar from '@mui/material/Snackbar';
-import MuiAlert from '@mui/material/Alert';
 
 import { todoEvents } from '../../events/events';
-
-const Alert = React.forwardRef(function Alert(props, ref) {
-  return <MuiAlert elevation={6} ref={ref} variant='filled' {...props} />;
-});
+import { Alert } from '../Alert';
 
 export class ItemForm extends Component {
   state = {

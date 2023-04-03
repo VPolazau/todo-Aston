@@ -8,6 +8,7 @@ import { todoEvents } from '../../events/events';
 
 export class Filter extends Component {
   state = {
+    searchValue: '',
     alignment: 'ALL',
   };
 
@@ -17,15 +18,20 @@ export class Filter extends Component {
     this.setState({ alignment: e.target.innerText });
   };
 
+  changeSearchFilter = (e) => {
+    this.setState({searchValue: e.target.value})
+    todoEvents.emit('searchChange', e.target.value)
+  };
+
   render() {
-    const {activeCount, doneCount, archiveCount} = this.props
+    const { activeCount, doneCount, archiveCount } = this.props;
     return (
       <div>
-        <Badge id='allCount'color="primary" badgeContent={activeCount + doneCount} sx={{left: 43, top: -18}}/>
-        <Badge id='activeCount'color="success" badgeContent={activeCount} sx={{left: 119, top: -18}}/>
-        <Badge id='doneCount'color="error" badgeContent={doneCount} sx={{left: 184, top: -18}}/>
-        <Badge id='archiveCount' color="secondary" badgeContent={archiveCount} sx={{left: 272, top: -18}}/>
-        
+        <Badge id='allCount' color='primary' badgeContent={activeCount + doneCount} sx={{ left: 43, top: -18 }} />
+        <Badge id='activeCount' color='success' badgeContent={activeCount} sx={{ left: 119, top: -18 }} />
+        <Badge id='doneCount' color='error' badgeContent={doneCount} sx={{ left: 184, top: -18 }} />
+        <Badge id='archiveCount' color='secondary' badgeContent={archiveCount} sx={{ left: 272, top: -18 }} />
+
         <ToggleButtonGroup aria-label='Platform' value={this.state.alignment} onClick={this.handleButtonFilter}>
           <ToggleButton color='primary' key='all' value='ALL'>
             All
@@ -48,6 +54,8 @@ export class Filter extends Component {
           id='outlined-basic'
           label='Type to search'
           variant='outlined'
+          value={this.state.searchValue}
+          onChange={(e) => this.changeSearchFilter(e)}
         />
       </div>
     );
