@@ -11,6 +11,7 @@ import { Filter } from '../Filter';
 import { ItemForm } from '../ItemForm';
 import { ItemList } from '../ItemList';
 import { todoEvents } from '../../events/events';
+import { ErrorBoundry } from '../ErrorBoundry'
 
 import styles from './styles.module.css';
 
@@ -43,6 +44,10 @@ export class App extends Component {
       this.changeTheme();
     }
 
+    if (prevState.activeCount === 0 && prevState.doneCount === 0 && prevState.archiveCount === 0) {
+      this.setState({ lastID: 0 });
+    }
+
     todoEvents.addListener('filterChange', (filter) => this.setState({ filter }));
 
     todoEvents.addListener('closeNewItem', () => this.setState({ isItemChangeMode: false, changedItem: undefined }));
@@ -72,7 +77,7 @@ export class App extends Component {
         const idx = items.findIndex((item) => item.id === id);
         const newItem = {
           ...items[idx],
-          type: items[idx].isArchived ? '' : items[idx].type === 'DONE' ? 'ACTIVE' : 'DONE'
+          type: items[idx].isArchived ? '' : items[idx].type === 'DONE' ? 'ACTIVE' : 'DONE',
         };
         return { items: [...items.slice(0, idx), newItem, ...items.slice(idx + 1)] };
       })
@@ -132,24 +137,26 @@ export class App extends Component {
       this.state;
     return (
       <ThemeProvider theme={this.setTheme()}>
-        <IconButton className={styles.switchTheme} variant='contained' onClick={this.changeTheme}>
-          {isLightTheme ? <DarkModeIcon fontSize='large' /> : <LightModeIcon fontSize='large' />}
-        </IconButton>
-        <div className={styles.container}>
-          <span className={isLightTheme ? styles.titleLight : styles.titleDark}>TODO List</span>
-          {isItemChangeMode ? (
-            <ItemForm item={changedItem} newID={lastID + 1} />
-          ) : (
-            <>
-              <Filter activeCount={activeCount} doneCount={doneCount} archiveCount={archiveCount} />
-              <ItemList filter={filter} items={items} />
-              <Fab variant='extended' size='small' sx={{ m: 2, p: 2 }} onClick={this.handleNewItemCreate}>
-                <AddCircleIcon sx={{ mr: 1 }} />
-                New Task
-              </Fab>
-            </>
-          )}
-        </div>
+        <ErrorBoundry>
+          <IconButton variant='contained' onClick={this.changeTheme}>
+            {isLightTheme ? <DarkModeIcon /> : <LightModeIcon />}
+          </IconButton>
+          <div className={styles.container}>
+            <span className={isLightTheme ? styles.titleLight : styles.titleDark}>TODO List</span>
+            {isItemChangeMode ? (
+              <ItemForm item={changedItem} newID={lastID + 1} />
+            ) : (
+              <>
+                <Filter activeCount={activeCount} doneCount={doneCount} archiveCount={archiveCount} />
+                <ItemList filter={filter} items={items} />
+                <Fab variant='extended' size='small' sx={{ m: 2, p: 2 }} onClick={this.handleNewItemCreate}>
+                  <AddCircleIcon sx={{ mr: 1 }} />
+                  New Task
+                </Fab>
+              </>
+            )}
+          </div>
+        </ErrorBoundry>
       </ThemeProvider>
     );
   }

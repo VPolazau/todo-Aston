@@ -3,6 +3,8 @@ import { todoEvents } from '../../events/events';
 
 import { Item } from '../Item';
 
+import styles from './styles.module.css';
+
 export class ItemList extends Component {
   state = {
     searchStr: '',
@@ -30,6 +32,7 @@ export class ItemList extends Component {
 
     return (
       <>
+        {resultItems.length === 0 && <div className={styles.container}>No tasks</div>}
         {resultItems.map((item) => (
           <Item key={item.id} filter={filter} item={item} />
         ))}
