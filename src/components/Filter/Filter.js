@@ -34,16 +34,16 @@ export class Filter extends Component {
         <Badge id='archiveCount' color='secondary' badgeContent={archiveCount} sx={{ left: 272, top: -18 }} />
 
         <ToggleButtonGroup aria-label='Platform' value={this.state.alignment} onClick={this.handleButtonFilter}>
-          <ToggleButton color='primary' key='all' value='ALL'>
+          <ToggleButton key='all' value='ALL'>
             All
           </ToggleButton>
-          <ToggleButton color='success' key='active' value='ACTIVE'>
+          <ToggleButton key='active' value='ACTIVE'>
             Active
           </ToggleButton>
-          <ToggleButton color='error' key='done' value='DONE'>
+          <ToggleButton key='done' value='DONE'>
             Done
           </ToggleButton>
-          <ToggleButton color='secondary' key='archive' value='ARCHIVE'>
+          <ToggleButton key='archive' value='ARCHIVE'>
             Archive
           </ToggleButton>
         </ToggleButtonGroup>
